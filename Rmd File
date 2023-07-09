@@ -1,0 +1,293 @@
+## Some texts are written in HTML notation for knitting
+
+
+
+```{r}
+install.packages('seqinr', repos='http://cran.us.r-project.org')
+library("seqinr")
+
+covid <- read.fasta(file="covid19.fasta")
+covid_seq <- covid[[1]]
+
+
+id <- c("ENO2", "TDH3", "RPL39", "GAL4", "POL12", "EST2") #protein codes
+
+protName <- c("enolase", "glyceraldehyde-3-phosphate dehydrogenase", "60S ribosomal protein L39", "regulatory protein Gal4", "DNA polymerase subunit alpha B", "telomerase reverse transcriptase") #full protein names
+
+abundance <- c(24563, 22369, 16232, 32.3, 13.7, 0.01) #cellular abundance in ppm
+
+length <- c(437, 332, 51, 881, 705, 884) #number of amino acids
+
+yeastProt <- data.frame(id, protName, abundance, length, stringsAsFactors = FALSE)
+```
+
+
+**1** 
+<span style="color:green"> 
+getDouble()'s output:
+</span>
+<span style="color:blue"> 
+function(num){} makes getDouble a function with a parameter of num. num*2 is then stored in the variable "result", which multiplies the argument of getDouble by 2. return(result) then returns the number of the result (num*2). 
+For example, getDouble(6) will return the number 12. (6 will be multiplied by 2, stored to "result", and returned)
+\span
+
+**2**
+<span style="color:green">
+Wrote a new function that takes one numeric argument and returns the cube of that argument. Then, called this function to calculate the cube of 1008 and assign it to a new variable silently. Printed out the variable in a new line.</span>
+```{r}
+function2 <- function(num){
+  cubed <- num^3
+  return(cubed)
+}
+newCube <- function2(1008)
+newCube
+```
+
+**3**
+<span style="color:green"> Wrote a function that takes in a numeric vector (one variable containing multiple elements) and returns the sum of the numbers in that vector. Call that function on a vector containing the integers 1 through 20, inclusive. Checked answer by writing a logical statement that compares your function's output to R's built-in function `sum()`.  </span>
+```{r}
+results <- 0
+x <- c()
+function3 <- function(x){
+  for (i in x){
+    results <- results + i
+  }
+  return(results)
+}
+function3(c(1:20))
+
+sum(1:20)
+```
+
+**4**
+<span style="color:green"> Wrote another function that takes in a numeric vector and returns the mean of the numbers in the vector. Called that function on a vector containing the integers 1 through 20, inclusive. </span>
+```{r}
+m <- 0
+x <- c()
+function4 <- function(x){
+  for (i in x){
+    m <- m + i
+  }
+  m <- m/length(x)
+  return(m)
+}
+function4(c(1:20))
+
+mean(seq(1:20))
+```
+
+
+**5**
+<span style="color:green"> Wrote a function called `my_Range` that takes in a numeric vector and returns the smallest and largest integer in a new vector. my_Range() outputs the same results as the range() function.
+</span>
+```{r}
+d <- c()
+my_Range <- function(d){
+  range <- c(min(d), max(d))
+  return(range)
+}
+my_Range(c(6, 18, 3, 9, 24, 12))
+range( 6, 18, 3, 9, 24, 12)
+```
+
+
+**6**
+<span style="color:green">
+Used quadratic formula to write a function that takes 3 coefficients of the quadratic equation as inputs, and returns the x-intercepts of a quadratic equation. Executed this function on the equation -2x^2 + 2x + 1 = 0.
+</span>
+```{r}
+myQF <- function(a,b,c){
+  Q <- c((-b+sqrt(b^2 - 4*a*c))/(2*a))
+  Q <- c(Q, (-b-sqrt(b^2 - 4*a*c))/(2*a))
+  return(Q)
+}
+myQF(-2, 2, 1)
+```
+
+**7**
+<span style="color:green"> Description of the data frame `yeastProt` (it is created at the beginning of this file).\span
+
+<span style="color:blue"> 
+yearProt is a 6 (rows) x 4 (columns) table with columns named "id". "protName", "abundance", and "length". R organize the vectors by filling in the table by column vertically. (Vectors are stored in each column name & then compiled into the data frame yeastProt. R then organizes them by these columns in that order from left to right.) 
+class(yeastProt) returns that it is a dataframe. dim(yeastProt) returns that its dimensions are 6 x 4.
+\span
+
+**8**
+<span style="color:green"> Indexing: \span
+```{r}
+yeastProt[1] #To retrieve a column as a data frame, type the desired column number in []
+yeastProt[1,] #To retrieve a row of yeastProt as a data frame, type the desired column number w/ a comma in []
+yeastProt[,1] #To retrieve elements of the 1st column as a vector, type a comma followed by the desired column number in []
+yeastProt[1,1] #To retrieve a specific element as a vector, type the row number, a comma, and the column number in []. ([row number, column number])
+yeastProt[1:3,c(1,3)] #multiple columns and rows can be retrieved using a range of numbers or a vector. In this case, rows 1 to 3 are retrieve in columns 1 and 3.
+```
+
+**9**
+```{r}
+yeastProt[yeastProt[,4] > 500, 3]
+```
+
+<span style="color:blue"> 
+In the command above, R identifies the rows where the 4th element is larger than 5, then prints these rows' 3rd elements.
+The result are elements from the last 3 elements of the 3rd column.
+\span
+
+
+
+**10**
+<span style="color:green"> Constructed a command that generates a *new* data frame that consists of information from proteins with **an abundance greater than 1000 ppm**. Print the new data frame within the same code chunk.  \span
+```{r}
+newDF <- yeastProt[yeastProt[,"abundance"]>1000,]
+newDF
+```
+
+
+
+**11**
+<span style="color:green"> Wrote a function named `HowManyNA` that expects an input of one dataframe and outputs a numeric vector containing the number of NAs there are in each column of the dataframe. Called the function on the dataframe named `sampleData`.\span
+```{r}
+sampleData <- data.frame(person1 = c(NA, 10*runif(10), rep(NA,9), 15*runif(10)),
+                         person2 = c(50*runif(30)),
+                         person3 = c(runif(14)*5, NA, runif(15)*6))
+
+
+numT <- c()
+HowManyNA <- function(df){
+  for (j in 1:ncol(df)){
+    numCol <- 0
+    for (i in 1:nrow(df)){
+      if (is.na(df[i,j]) == TRUE){
+        numCol <- numCol + 1
+      }
+    }
+    numT <- c(numT, numCol)
+  }
+  return(numT)
+}
+HowManyNA(sampleData)
+```
+
+
+**12**
+<span style="color:blue"> 
+using length(covid_seq), there are 29903 nucleotides in the COVID virus genome sequence.
+\span
+
+
+**13**
+<span style="color:green"> Printed the first 10 nucleotides of the COVID genome: \span
+```{r}
+covid_seq[1:10]
+```
+
+**14**
+<span style="color:green"> Found the total number of each nucleotide that occurs in the COVID genome (stored under `covid_seq`). \span
+```{r}
+table(covid_seq)
+```
+<span style="color:blue"> 
+Using intuition, the DNA strand complimentary to this gene: have 9594 A, 5863 C, 5492 G, and 8954 T.
+\span
+
+**15**
+<span style="color:green"> (a) Wrote a function called `seqWeight()` that, given a nucleotide sequence, outputs its weight. This function has an optional parameter ('type') that is by default set to type = "DNA". It can interpret seq to be RNA if type = "RNA" and input its appropriate weight.
+\span  
+```{r}
+
+D <- c(313.2, 289.2, 329.2, 304.2)
+#the weights are in the order of ACGT (the order in which nucleotides will be tabled in)
+R <- c(329.2, 305.2, 345.2, 306.2) 
+#the weights are in the order of ACGU (the order in which nucleotides will be tabled in)
+
+seqWeight <- function(df, type = "DNA"){
+  tableINDV <- table(df)
+  totalW = 0
+  if (type == "DNA"){
+    for (i in 1:4){totalW <- totalW + tableINDV[[i]]*D[i]}
+  }else if (type == "RNA"){
+    for (i in 1:4){totalW <- totalW + tableINDV[[i]]*R[i]}
+  }
+  return(totalW)
+}
+```
+
+
+
+<span style="color:green"> (b) Tested out my seqWeight() function:
+\span  
+```{r}
+seq <- c("g", "t", "t", "a", "a", "c", "a", "g", "c", "a", "g", "t", "t", "a") 
+```
+
+```{r}
+seqWeight(seq, type = "DNA")
+```
+<span style="color:blue"> 
+Weight = 4348.8
+\span
+
+
+**16**
+<span style="color:green"> Created a function that takes in an argument and outputs the frequency of guanine bases. Tested the function on the covid virus sequence.\span
+```{r}
+FofG <- function(df){
+  NUCtable <- table(df)
+  NUCtotal <- sum(NUCtable[1:4])
+  percentG <- NUCtable[["g"]]/NUCtotal
+  return(percentG)
+}
+FofG(covid)
+```
+<span style="color:blue"> 
+The frequency of guanine bases is 0.1960673
+\span
+
+**17**
+<span style="color:green"> Created a new function called `GC_Content` that will take in an argument of a nucleotide sequence and returns the GC content of the sequence. Tested the function on the covid virus sequence. Then I compared my returned GC content with the result from SeqinR's built-in function `GC()`. \span
+
+```{r}
+GC = 0
+GC_Content <- function(df){
+  sadtable <- table(df)
+  Gnum <- sadtable[["g"]]
+  Cnum <- sadtable[["c"]]
+  totalnum <- sum(sadtable[])
+  GCpercent <- (Gnum + Cnum)/totalnum 
+  return(GCpercent)
+  }
+GC_Content(covid_seq)
+
+GC(covid_seq)
+```
+<span style="color:blue"> 
+It gives me the same output.
+\span
+
+
+**18**
+<span style="color:green"> Wrote an expression to find the frequency (counts) of DNA words that are 2 nucleotides long. \span
+```{r}
+count(covid_seq, 2)
+```
+
+**19**
+<span style="color:green"> Found the rho statistic for the covid genome sequence, which measure how over or under represented a particular DNA word is. The function takes in the sequence (df), then the 2 relevant nucleotides in alphabetical order. \span  
+
+```{r}
+rho <- function(df, x, y){
+  xy <- paste(x,y, collapse="", sep="")
+  TBL <- table(df)
+  DoubleTBL <- count(df, 2)
+  fGT <- DoubleTBL[[xy]]/length(df)
+  fG <- TBL[[x]]/length(df)
+  fT <- TBL[[y]]/length(df)
+  p = fGT/(fG * fT)
+  return(p)
+}
+rho(covid_seq, "g", "t")
+
+```
+<span style="color:blue"> 
+Because p is larger than 1 for GT, the 2-nucleotide word GT is over-represented.
+\span
+
